@@ -1,0 +1,48 @@
+name: Terraform Deploy (main Branch)
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Setup Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.x
+
+    - name: Set up AWS credentials
+      uses: aws-actions/configure-aws-credentials@v3
+      with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-2
+
+    - name: Set up Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: 1.9.2
+
+    - name: Terraform Format
+      run: terraform fmt -check
+  
+    - name: Terraform Validate
+      run: terraform validate
+
+    - name: Initialize Terraform
+      run: terraform init
+  
+    - name: Terraform Plan
+      id: plan
+      run: terraform plan -out=tfplan
+
+    - name: Apply Terraform Configuration
+      run: terraform apply -auto-approve
+
