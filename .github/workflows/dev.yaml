@@ -31,14 +31,14 @@ jobs:
       with:
         terraform_version: 1.9.2
 
+    - name: Initialize Terraform
+      run: terraform init
+
     - name: Terraform Format
       run: terraform fmt -check
   
     - name: Terraform Validate
       run: terraform validate
-
-    - name: Initialize Terraform
-      run: terraform init
   
     - name: Terraform Plan
       id: plan
