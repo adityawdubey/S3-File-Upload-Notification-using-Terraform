@@ -40,9 +40,9 @@ jobs:
     - name: Terraform Validate
       run: terraform validate
   
-    - name: Terraform Plan
-      id: plan
-      run: terraform plan -out=tfplan
+    # - name: Terraform Plan
+    #   id: plan
+    #   run: terraform plan -out=tfplan
 
     - name: Apply Terraform Configuration
       run: terraform apply -auto-approve
