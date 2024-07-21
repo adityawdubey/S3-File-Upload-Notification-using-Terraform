@@ -20,7 +20,7 @@ def handler(event, context):
 
         # Convert event time to a different timezone
         utc_time = datetime.strptime(event_time, "%Y-%m-%dT%H:%M:%S.%fZ")
-        local_tz = pytz.timezone('Asia/Tehran')
+        local_tz = pytz.timezone('America/New_York')
         local_time = utc_time.replace(tzinfo=pytz.utc).astimezone(local_tz)
 
         metadata = {

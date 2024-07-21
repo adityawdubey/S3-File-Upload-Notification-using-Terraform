@@ -16,7 +16,9 @@ provider "aws" {
 
 # S3 Bucket for file uploads
 resource "aws_s3_bucket" "upload_bucket" {
-  bucket = var.file_upload_bucket
+  bucket        = var.file_upload_bucket
+  force_destroy = true
+
 }
 
 # SNS Topic for file upload notifications
