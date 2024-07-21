@@ -26,6 +26,11 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-2
 
+    - name: Create terraform.tfvars file
+      run: |
+        echo 'email_subscription_endpoint = "${{ vars.EMAIL_SUBSCRIPTION_ENDPOINT }}"' >> terraform.tfvars
+        echo 'file_upload_bucket = "${{ vars.FILE_UPLOAD_BUCKET }}"' >> terraform.tfvars
+
     - name: Set up Terraform
       uses: hashicorp/setup-terraform@v2
       with:
@@ -40,9 +45,9 @@ jobs:
     - name: Terraform Validate
       run: terraform validate
   
-    # - name: Terraform Plan
-    #   id: plan
-    #   run: terraform plan -out=tfplan
+    - name: Terraform Plan
+      id: plan
+      run: terraform plan -out=tfplan
 
     - name: Apply Terraform Configuration
       run: terraform apply -auto-approve
