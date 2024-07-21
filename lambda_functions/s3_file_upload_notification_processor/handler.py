@@ -1,7 +1,7 @@
 import json
 import boto3
 import os
-import pytz
+# import pytz
 from datetime import datetime
 
 s3_client = boto3.client('s3')
@@ -18,10 +18,10 @@ def handler(event, context):
         s3_key = record['s3']['object']['key']
         event_time = record['eventTime']
 
-        # Convert event time to a different timezone
-        utc_time = datetime.strptime(event_time, "%Y-%m-%dT%H:%M:%S.%fZ")
-        local_tz = pytz.timezone('America/New_York')
-        local_time = utc_time.replace(tzinfo=pytz.utc).astimezone(local_tz)
+        # # Convert event time to a different timezone
+        # utc_time = datetime.strptime(event_time, "%Y-%m-%dT%H:%M:%S.%fZ")
+        # local_tz = pytz.timezone('America/New_York')
+        # local_time = utc_time.replace(tzinfo=pytz.utc).astimezone(local_tz)
 
         metadata = {
             'bucket': s3_bucket,
@@ -34,7 +34,7 @@ def handler(event, context):
             MessageBody=json.dumps(metadata)
         )
 
-        notification_message = f"New file uploaded to S3 bucket '{s3_bucket}' with key '{s3_key}' at {local_time}"
+        notification_message = f"New file uploaded to S3 bucket '{s3_bucket}' with key '{s3_key}'"
 
         sns_response = sns_client.publish(
             TopicArn=sns_topic_arn,
