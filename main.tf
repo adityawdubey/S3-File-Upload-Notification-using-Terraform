@@ -75,13 +75,13 @@ resource "aws_lambda_layer_version" "lambda_layer" {
 
 data "archive_file" "lambda_function" {
   type        = "zip"
-  source_dir  = "${path.module}/lambda_functions/s3_file_upload_notification_processor"
-  output_path = "${path.module}/lambda_functions/s3_file_upload_notification_processor.zip"
+  source_dir  = "${path.module}/lambda_functions/s3_event_handler"
+  output_path = "${path.module}/lambda_functions/s3_event_handler.zip"
 }
 
-resource "aws_lambda_function" "lambda_function" {
+resource "s3_event_handler" "lambda_function" {
   filename         = data.archive_file.lambda_function.output_path
-  function_name    = "s3_file_upload_notification_processor"
+  function_name    = "s3_event_handler"
   role             = aws_iam_role.lambda_role.arn
   handler          = "handler.handler"
   runtime          = "python3.9"
@@ -146,7 +146,7 @@ resource "aws_s3_bucket_notification" "s3_notification" {
   bucket = aws_s3_bucket.upload_bucket.id
 
   lambda_function {
-    lambda_function_arn = aws_lambda_function.lambda_function.arn
+    lambda_function_arn = s3_event_handler.lambda_function.arn
     events              = ["s3:ObjectCreated:*"]
   }
 
@@ -157,7 +157,7 @@ resource "aws_s3_bucket_notification" "s3_notification" {
 resource "aws_lambda_permission" "allow_s3" {
   statement_id  = "AllowS3InvokeLambda"
   action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.lambda_function.function_name
+  function_name = s3_event_handler.lambda_function.function_name
   principal     = "s3.amazonaws.com"
   source_arn    = aws_s3_bucket.upload_bucket.arn
 }
