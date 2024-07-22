@@ -34,4 +34,6 @@ override.tf.json
 terraform.rc
 
 # dev env variables
-terraform.tfvars
+lambda_layer.zip
+lambda_layer/python
+lambda_functions/*.zip
